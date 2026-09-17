@@ -1,0 +1,17 @@
+---
+interface Props {
+  className?: string;
+  delay?: number;
+}
+
+const { className = '', delay = 0 } = Astro.props;
+---
+
+<div 
+  class={`bento-card cinematic-reveal flex flex-col p-8 ${className}`} 
+  style={`transition-delay: ${delay}ms;`}
+>
+  <div class="relative z-20 h-full flex flex-col">
+    <slot />
+  </div>
+</div>

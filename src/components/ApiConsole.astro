@@ -1,0 +1,265 @@
+---
+/**
+ * ApiConsole.astro
+ * 
+ * An interactive project showcase that mimics an API testing console (like Postman).
+ * It features a sidebar with "endpoints" (projects) and a main viewer area.
+ * Clicking an endpoint simulates a network request, calculates fake latency,
+ * and renders a JSON-like representation of the project alongside a UI preview.
+ */
+---
+<div class="rounded-xl border border-border shadow-card bg-surface overflow-hidden">
+  
+  <!-- Console top bar -->
+  <div class="flex items-center justify-between px-4 py-2 bg-[#1c1c1e] border-b border-border">
+    <div class="flex items-center gap-2">
+      <div class="flex gap-1.5">
+        <span class="w-3 h-3 rounded-full bg-[#ff5f57]"></span>
+        <span class="w-3 h-3 rounded-full bg-[#febc2e]"></span>
+        <span class="w-3 h-3 rounded-full bg-[#28c840]"></span>
+      </div>
+      <span class="font-mono text-xs text-muted hidden sm:block ml-2">api.davidcode.dev — Projects Explorer</span>
+    </div>
+    <div class="flex items-center gap-2">
+      <div id="api-status-badge" class="hidden flex items-center gap-1.5 px-2 py-0.5 rounded bg-accent-dim/20 border border-accent-dim/30">
+        <span class="w-2 h-2 rounded-full bg-accent animate-pulse"></span>
+        <span id="api-status-text" class="font-mono text-xs text-accent">200 OK</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="flex flex-col md:flex-row min-h-[420px]">
+    
+    <!-- Left: endpoint list -->
+    <div class="md:w-64 border-b md:border-b-0 md:border-r border-border bg-[#111111] p-4 flex flex-col gap-2">
+      <p class="font-mono text-xs text-muted uppercase tracking-widest mb-3 px-2">Endpoints</p>
+      
+      <button class="endpoint-btn text-left px-3 py-2 rounded-md hover:bg-border/50 transition-colors flex items-center gap-3 active-endpoint" data-endpoint="solbabackups">
+        <span class="font-mono text-xs font-bold text-accent">GET</span>
+        <span class="font-mono text-sm text-text-primary">/solbabackups</span>
+      </button>
+
+      <button class="endpoint-btn text-left px-3 py-2 rounded-md hover:bg-border/50 transition-colors flex items-center gap-3" data-endpoint="etna">
+        <span class="font-mono text-xs font-bold text-accent">GET</span>
+        <span class="font-mono text-sm text-text-primary">/etnapsicologia</span>
+      </button>
+      
+      <button class="endpoint-btn text-left px-3 py-2 rounded-md hover:bg-border/50 transition-colors flex items-center gap-3" data-endpoint="saac">
+        <span class="font-mono text-xs font-bold text-accent">GET</span>
+        <span class="font-mono text-sm text-text-primary">/app-saac</span>
+      </button>
+
+      <button class="endpoint-btn text-left px-3 py-2 rounded-md hover:bg-border/50 transition-colors flex items-center gap-3" data-endpoint="trucos125">
+        <span class="font-mono text-xs font-bold text-accent">GET</span>
+        <span class="font-mono text-sm text-text-primary">/trucos125</span>
+      </button>
+
+      <!-- Latency display -->
+      <div class="mt-auto pt-4 border-t border-border">
+        <div class="font-mono text-xs text-muted flex justify-between px-2">
+          <span>Latency</span>
+          <span id="latency-display" class="text-accent">— ms</span>
+        </div>
+        <div class="mt-2 h-1 bg-border rounded-full overflow-hidden mx-2">
+          <div id="latency-bar" class="h-full bg-accent transition-all duration-500" style="width:0%"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: response panel -->
+    <div class="flex-1 flex flex-col bg-bg">
+      <div class="flex items-center gap-4 px-5 py-2 border-b border-border bg-[#111111]/50">
+        <span class="font-mono text-xs text-muted">Response Body</span>
+        <span class="font-mono text-xs text-subtle">application/json</span>
+      </div>
+
+      <div class="relative flex-1 p-5 overflow-auto">
+        <div id="api-loading" class="hidden absolute inset-0 flex items-center justify-center bg-bg/80 backdrop-blur-sm z-10">
+          <div class="flex flex-col items-center gap-3">
+            <div class="w-6 h-6 border-2 border-border border-t-accent rounded-full animate-spin"></div>
+            <span class="font-mono text-xs text-muted">Fetching...</span>
+          </div>
+        </div>
+        
+        <div class="flex flex-col gap-4">
+          <pre id="api-response" class="font-mono text-sm leading-6 text-text-primary whitespace-pre-wrap"></pre>
+          <div id="api-image-preview" class="hidden mt-4 rounded-lg overflow-hidden border border-border shadow-lg">
+            <img id="project-img" src="" alt="Project Preview" class="w-full h-auto max-h-64 object-cover" />
+          </div>
+          <a id="project-link" href="#" target="_blank" class="hidden font-mono text-xs text-bg bg-accent px-4 py-2 rounded self-start hover:bg-accent-dim transition-colors mt-2">
+            Visit Project ↗
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .endpoint-btn.active-endpoint {
+    background-color: var(--color-border);
+  }
+</style>
+
+<script>
+  const ENDPOINTS: Record<string, any> = {
+    solbabackups: {
+      json: {
+        id: "prj_solbabackups",
+        name: "SolbaBackups",
+        status: "production",
+        description: "In-house backup tool built for Solba Informática with DB integration and Python scripting.",
+        stack: ["Python", "Automation", "SQL"],
+        url: "https://github.com/Davidcode-ai/SolbaBackups"
+      },
+      image: "/images/projects/solbabackups.png",
+      url: "https://github.com/Davidcode-ai/SolbaBackups"
+    },
+    etna: {
+      json: {
+        id: "prj_etna",
+        name: "EtnaPsicología",
+        status: "production",
+        description: "Self-manageable website for a psychology clinic. Giving the client total autonomy.",
+        stack: ["WordPress", "Elementor", "PHP"],
+        url: "https://www.etnapsicologia.com/"
+      },
+      image: "/images/projects/etna-psicologia.png",
+      url: "https://www.etnapsicologia.com/"
+    },
+    saac: {
+      json: {
+        id: "prj_saac",
+        name: "App Web SAAC",
+        status: "beta",
+        description: "Accessible web app for augmentative communication, built with modern frontend tools.",
+        stack: ["React", "Vite", "CSS3"],
+        url: "https://github.com/Davidcode-ai/Comunic-arte"
+      },
+      image: "/images/projects/comunic-arte.png",
+      url: "https://github.com/Davidcode-ai/Comunic-arte"
+    },
+    trucos125: {
+      json: {
+        id: "prj_trucos125",
+        name: "trucos125.com",
+        status: "production",
+        description: "Content-driven monetized blog demonstrating SEO and content strategy.",
+        stack: ["Astro", "SEO", "Markdown"],
+        url: "https://trucos125.vercel.app"
+      },
+      image: "/images/projects/trucos125.png",
+      url: "https://trucos125.vercel.app"
+    }
+  };
+
+  function syntaxHighlight(json: string) {
+    json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
+      let cls = 'text-[#f472b6]'; // json-num (pink)
+      if (/^"/.test(match)) {
+        if (/:$/.test(match)) {
+          cls = 'text-[#38bdf8]'; // json-key (light blue)
+        } else {
+          cls = 'text-[#a3e635]'; // json-str (lime)
+        }
+      } else if (/true|false/.test(match)) {
+        cls = 'text-[#fbbf24]'; // json-bool (amber)
+      } else if (/null/.test(match)) {
+        cls = 'text-[#94a3b8]'; // json-null (slate)
+      }
+      return '<span class="' + cls + '">' + match + '</span>';
+    });
+  }
+
+  function initApiConsole() {
+    const buttons = document.querySelectorAll('.endpoint-btn');
+    const loading = document.getElementById('api-loading');
+    const responseView = document.getElementById('api-response');
+    const statusBadge = document.getElementById('api-status-badge');
+    const latencyDisplay = document.getElementById('latency-display');
+    const latencyBar = document.getElementById('latency-bar');
+    
+    const imagePreview = document.getElementById('api-image-preview');
+    const projectImg = document.getElementById('project-img') as HTMLImageElement;
+    const projectLink = document.getElementById('project-link') as HTMLAnchorElement;
+
+    function loadEndpoint(endpointId: string, btnElement: Element) {
+      // UI Reset
+      buttons.forEach(b => b.classList.remove('active-endpoint'));
+      btnElement.classList.add('active-endpoint');
+      
+      statusBadge?.classList.add('hidden');
+      if (responseView) responseView.innerHTML = '';
+      imagePreview?.classList.add('hidden');
+      projectLink?.classList.add('hidden');
+      
+      if (latencyDisplay) latencyDisplay.textContent = '— ms';
+      if (latencyBar) latencyBar.style.width = '0%';
+      
+      loading?.classList.remove('hidden');
+
+      // Simulate network request
+      const latency = Math.floor(Math.random() * 150) + 40; // 40ms to 190ms
+      
+      setTimeout(() => {
+        loading?.classList.add('hidden');
+        
+        const data = ENDPOINTS[endpointId];
+        if (!data) return;
+
+        // Render JSON
+        if (responseView) {
+          responseView.innerHTML = syntaxHighlight(JSON.stringify(data.json, null, 2));
+        }
+
+        // Render Image and Link
+        if (imagePreview && projectImg && data.image) {
+          projectImg.src = data.image;
+          imagePreview.classList.remove('hidden');
+        }
+        
+        if (projectLink && data.url) {
+          projectLink.href = data.url;
+          projectLink.classList.remove('hidden');
+        }
+
+        // Update badges and latency
+        statusBadge?.classList.remove('hidden');
+        
+        if (latencyDisplay) {
+          latencyDisplay.textContent = `${latency} ms`;
+          latencyDisplay.className = latency < 80 ? 'text-[#28c840]' : (latency < 150 ? 'text-[#febc2e]' : 'text-[#ff5f57]');
+        }
+        
+        if (latencyBar) {
+          const width = Math.min((latency / 200) * 100, 100);
+          latencyBar.style.width = `${width}%`;
+          latencyBar.className = `h-full transition-all duration-500 rounded-full ${latency < 80 ? 'bg-[#28c840]' : (latency < 150 ? 'bg-[#febc2e]' : 'bg-[#ff5f57]')}`;
+        }
+      }, latency);
+    }
+
+    // Attach events
+    buttons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const endpoint = (btn as HTMLElement).dataset.endpoint;
+        if (endpoint) loadEndpoint(endpoint, btn);
+      });
+    });
+
+    // Load initial endpoint if present
+    const firstBtn = buttons[0];
+    if (firstBtn) {
+      const endpoint = (firstBtn as HTMLElement).dataset.endpoint;
+      if (endpoint) loadEndpoint(endpoint, firstBtn);
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initApiConsole);
+  } else {
+    initApiConsole();
+  }
+  document.addEventListener('astro:page-load', initApiConsole);
+</script>

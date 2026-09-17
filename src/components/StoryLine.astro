@@ -1,0 +1,102 @@
+---
+// StoryLine.astro
+// Central wrapper that draws the SVG "thread" down the page
+---
+<div id="story-container" class="relative w-full max-w-6xl mx-auto px-4 md:px-8 py-20 min-h-screen">
+  
+  <!-- The SVG Canvas -->
+  <div class="absolute inset-0 pointer-events-none z-0 overflow-hidden">
+    <svg id="story-svg" class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="inkGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stop-color="#222222" /> <!-- Border -->
+          <stop offset="40%" stop-color="#00cc6a" /> <!-- Accent Dim -->
+          <stop offset="70%" stop-color="#00ff88" /> <!-- Accent -->
+          <stop offset="100%" stop-color="#222222" />
+        </linearGradient>
+      </defs>
+      <path id="story-path" d="" fill="none" stroke="url(#inkGradient)" stroke-width="2" stroke-linecap="square" class="opacity-80" />
+    </svg>
+  </div>
+
+  <!-- Chapters Content -->
+  <div class="relative z-10 flex flex-col gap-24 md:gap-[200px]">
+    <slot />
+  </div>
+
+</div>
+
+<script>
+  function initStoryLine() {
+    const svg = document.getElementById('story-svg');
+    const path = document.getElementById('story-path') as SVGPathElement;
+    const container = document.getElementById('story-container');
+    
+    if (!svg || !path || !container) return;
+
+    let pathLength = 0;
+
+    // Generate a straight vertical code indentation guide
+    function updatePath() {
+      const height = container.offsetHeight;
+      const width = container.offsetWidth;
+      const mid = width / 2;
+      
+      // Simple straight line from top to bottom
+      let d = `M ${mid} 0 L ${mid} ${height}`;
+      
+      path.setAttribute('d', d);
+      
+      // Update stroke dash for drawing animation
+      pathLength = path.getTotalLength();
+      path.style.strokeDasharray = `${pathLength}`;
+      path.style.strokeDashoffset = `${pathLength}`;
+    }
+
+    // Scroll drawing logic
+    function handleScroll() {
+      const rect = container.getBoundingClientRect();
+      const scrollPercent = (window.innerHeight * 0.7 - rect.top) / rect.height;
+      
+      let drawLength = pathLength * scrollPercent;
+      
+      if (drawLength < 0) drawLength = 0;
+      if (drawLength > pathLength) drawLength = pathLength;
+      
+      path.style.strokeDashoffset = `${pathLength - drawLength}`;
+    }
+
+    // Node reveal observer
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { rootMargin: '0px 0px -15% 0px' });
+
+    document.querySelectorAll('.story-node, .story-node-left, .story-node-right, .doodle-svg, .reveal').forEach(el => observer.observe(el));
+
+    // Initialize
+    updatePath();
+    handleScroll();
+    
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    
+    // Handle resizes
+    const resizeObserver = new ResizeObserver(() => {
+      requestAnimationFrame(() => {
+        updatePath();
+        handleScroll();
+      });
+    });
+    if (container) resizeObserver.observe(container);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initStoryLine);
+  } else {
+    initStoryLine();
+  }
+  document.addEventListener('astro:page-load', initStoryLine);
+</script>

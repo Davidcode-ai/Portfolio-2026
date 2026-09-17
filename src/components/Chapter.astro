@@ -1,0 +1,62 @@
+---
+// Chapter.astro
+// Represents a milestone or section along the StoryLine
+interface Props {
+  title?: string;
+  subtitle?: string;
+  alignment?: 'left' | 'right' | 'center';
+  date?: string;
+  id?: string;
+  marginTop?: string;
+}
+const { title, subtitle, alignment = 'center', date, id, marginTop = "" } = Astro.props;
+
+// Determine alignment classes
+let wrapperClass = `flex flex-col w-full story-element ${marginTop} `;
+let contentAlignClass = "";
+let nodeClass = "reveal";
+
+if (alignment === 'left') {
+  wrapperClass += "md:flex-row md:justify-start";
+  contentAlignClass = "md:w-5/12 md:text-right";
+} else if (alignment === 'right') {
+  wrapperClass += "md:flex-row-reverse md:justify-start";
+  contentAlignClass = "md:w-5/12 md:text-left";
+} else {
+  wrapperClass += "items-center text-center";
+  contentAlignClass = "w-full max-w-2xl";
+}
+---
+
+<div id={id} class={wrapperClass}>
+  <div class={`${contentAlignClass} ${nodeClass}`}>
+    
+    <div class={`rounded-xl border border-border shadow-card bg-surface overflow-hidden hover:shadow-glow transition-all duration-300 ${alignment === 'left' ? 'ml-auto' : ''}`}>
+      
+      <!-- Fake Editor Tab Bar -->
+      <div class="flex items-center gap-4 px-4 py-2 bg-[#1c1c1e] border-b border-border">
+        <div class="flex items-center gap-1.5">
+          <span class="w-3 h-3 rounded-full bg-border"></span>
+          <span class="w-3 h-3 rounded-full bg-border"></span>
+        </div>
+        <div class="font-mono text-xs flex gap-2">
+          {date && <span class="text-accent">[{date}]</span>}
+          {title && <span class="text-text-secondary">{title}.md</span>}
+        </div>
+      </div>
+      
+      <!-- Content Area -->
+      <div class="p-6 md:p-8 font-sans text-left text-sm md:text-base leading-relaxed text-text-secondary bg-bg/50">
+        {subtitle && (
+          <p class="font-mono text-accent-dim uppercase tracking-widest text-xs font-bold mb-4">
+            // {subtitle}
+          </p>
+        )}
+        
+        <slot />
+      </div>
+
+    </div>
+
+  </div>
+</div>

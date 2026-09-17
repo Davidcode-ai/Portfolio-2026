@@ -1,0 +1,148 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Navbar from '../components/Navbar.astro';
+import Footer from '../components/Footer.astro';
+import StoryLine from '../components/StoryLine.astro';
+import Chapter from '../components/Chapter.astro';
+import TerminalHero from '../components/TerminalHero.astro';
+import ApiConsole from '../components/ApiConsole.astro';
+---
+
+<Layout title="David Muñoz — Web Developer">
+  <Navbar />
+  
+  <main class="pt-10 overflow-hidden">
+    <TerminalHero />
+    
+    <StoryLine>
+      
+      <!-- Chapter 1: Hardware Roots -->
+      <Chapter id="experience" alignment="left" title="1. The Roots" subtitle="SMR & IT Support (2023 - 2025)" date="Where it started">
+        <p class="text-text-secondary text-lg leading-relaxed mb-6">
+          My journey started under the hood. As an <strong class="text-text-primary">IT Support Technician</strong> and SMR student, I got my hands dirty assembling rigs, configuring local networks, and troubleshooting raw, real-world issues.
+        </p>
+        <p class="text-text-secondary text-lg leading-relaxed">
+          I learned how systems actually breathe before I ever wrote a line of code. That hardware foundation makes me a <span class="highlight-yellow text-white">pragmatic, full-picture developer</span> today. I don't just know the code; I know the metal it runs on.
+        </p>
+      </Chapter>
+
+      <!-- Chapter 2: The Pivot -->
+      <Chapter alignment="center" marginTop="md:-mt-10">
+        <div class="max-w-4xl mx-auto py-12 px-6 relative border-l-2 border-accent pl-8 bg-surface-secondary/50 rounded-r-xl">
+          <h2 class="text-2xl md:text-4xl font-mono text-text-primary leading-tight text-left">
+            <span class="text-accent-dim">//</span> Fixing computers taught me how they work. <br/> 
+            <span class="text-accent-dim">//</span> But I didn't just want to fix them. <br/> 
+            <span class="text-accent font-bold mt-4 block">I wanted to build what runs on them.</span>
+          </h2>
+        </div>
+      </Chapter>
+
+      <!-- Chapter 3: Code Awakening -->
+      <Chapter alignment="right" title="2. The Code Awakening" subtitle="DAW (2025 - Present)" date="Level up">
+
+        <p class="text-text-secondary text-lg leading-relaxed mb-6">
+          Hardware wasn't enough. I wanted to create. I enrolled in the <strong class="text-text-primary">Higher Degree in DAW</strong> and everything clicked. 
+        </p>
+        <p class="text-text-secondary text-lg leading-relaxed">
+          HTML, CSS, JavaScript, SQL, and Python. I started building applications from scratch, realizing that code was the ultimate tool for problem-solving. But the classroom was just the beginning. I needed <span class="highlight-yellow text-white">real clients</span>.
+        </p>
+      </Chapter>
+
+      <!-- Chapter 4: WebDavid (Freelance) -->
+      <Chapter alignment="left" title="3. The Hustle" subtitle="Freelance Web Developer" date="Real World">
+        <p class="text-text-secondary text-lg leading-relaxed mb-6">
+          I didn't wait to graduate to start working. I launched <a href="https://webdavid.es" class="text-accent-ink font-bold hover:text-white transition-colors underline decoration-2 underline-offset-4" target="_blank" data-magnetic>WebDavid.es</a> to help local businesses digitize their operations.
+        </p>
+        <p class="text-text-secondary text-lg leading-relaxed mb-6">
+          This taught me something school couldn't: <strong class="text-text-primary">Client communication, SEO, and delivering actual value</strong>. I built self-manageable sites and automated workflows using Make.com, giving clients total autonomy.
+        </p>
+        <div class="flex items-center gap-3 mt-8">
+          <span class="font-mono text-xl text-accent-dim">> System.out.println("Shipped to production.");</span>
+        </div>
+      </Chapter>
+
+      <!-- Chapter 5: Toolkit -->
+      <Chapter alignment="center" title="4. My Arsenal" subtitle="What I build with" date="Skills">
+        <div class="w-full max-w-4xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-6 mt-8">
+          <!-- Toolkit items -->
+          <div class="sketch-border p-6 flex flex-col items-center justify-center gap-3 hover:bg-surface-tertiary/20 transition-colors animate-float-paper" style="animation-delay: 0s;">
+            <span class="text-4xl grayscale hover:grayscale-0 transition-all duration-300">🌐</span>
+            <span class="font-bold text-text-primary">Web Core</span>
+            <span class="text-xs text-text-tertiary text-center">HTML, CSS, JS</span>
+          </div>
+          <div class="sketch-border p-6 flex flex-col items-center justify-center gap-3 hover:bg-surface-tertiary/20 transition-colors animate-float-paper" style="animation-delay: 0.2s;">
+            <span class="text-4xl grayscale hover:grayscale-0 transition-all duration-300">🚀</span>
+            <span class="font-bold text-text-primary">Astro</span>
+            <span class="text-xs text-text-tertiary text-center">Static & Fast</span>
+          </div>
+          <div class="sketch-border p-6 flex flex-col items-center justify-center gap-3 hover:bg-surface-tertiary/20 transition-colors animate-float-paper" style="animation-delay: 0.4s;">
+            <span class="text-4xl grayscale hover:grayscale-0 transition-all duration-300">🐍</span>
+            <span class="font-bold text-text-primary">Python</span>
+            <span class="text-xs text-text-tertiary text-center">Scripts & Backend</span>
+          </div>
+          <div class="sketch-border p-6 flex flex-col items-center justify-center gap-3 hover:bg-surface-tertiary/20 transition-colors animate-float-paper" style="animation-delay: 0.6s;">
+            <span class="text-4xl grayscale hover:grayscale-0 transition-all duration-300">🗄️</span>
+            <span class="font-bold text-text-primary">MariaDB</span>
+            <span class="text-xs text-text-tertiary text-center">SQL & Relational</span>
+          </div>
+          <div class="sketch-border p-6 flex flex-col items-center justify-center gap-3 hover:bg-surface-tertiary/20 transition-colors animate-float-paper" style="animation-delay: 0.1s;">
+            <span class="text-4xl grayscale hover:grayscale-0 transition-all duration-300">🤖</span>
+            <span class="font-bold text-text-primary">AI Tooling</span>
+            <span class="text-xs text-text-tertiary text-center">Cursor & Prompts</span>
+          </div>
+          <div class="sketch-border p-6 flex flex-col items-center justify-center gap-3 hover:bg-surface-tertiary/20 transition-colors animate-float-paper" style="animation-delay: 0.3s;">
+            <span class="text-4xl grayscale hover:grayscale-0 transition-all duration-300">⚙️</span>
+            <span class="font-bold text-text-primary">Automation</span>
+            <span class="text-xs text-text-tertiary text-center">Make.com</span>
+          </div>
+          <div class="sketch-border p-6 flex flex-col items-center justify-center gap-3 hover:bg-surface-tertiary/20 transition-colors animate-float-paper" style="animation-delay: 0.5s;">
+            <span class="text-4xl grayscale hover:grayscale-0 transition-all duration-300">📝</span>
+            <span class="font-bold text-text-primary">CMS</span>
+            <span class="text-xs text-text-tertiary text-center">WordPress</span>
+          </div>
+          <div class="sketch-border p-6 flex flex-col items-center justify-center gap-3 hover:bg-surface-tertiary/20 transition-colors animate-float-paper" style="animation-delay: 0.7s;">
+            <span class="text-4xl grayscale hover:grayscale-0 transition-all duration-300">🐙</span>
+            <span class="font-bold text-text-primary">Git</span>
+            <span class="text-xs text-text-tertiary text-center">Version Control</span>
+          </div>
+        </div>
+      </Chapter>
+
+      <!-- Chapter 6: Projects -->
+      <Chapter id="projects" alignment="center" title="5. The Showcase" subtitle="Real Client Work" date="Portfolio">
+        <p class="text-text-secondary text-lg mb-12 max-w-2xl mx-auto">
+          Theory is good, but shipping is better. Here is a selection of projects built for businesses and real users.
+        </p>
+        
+        <div class="mt-8 text-left relative z-20 w-full max-w-4xl mx-auto">
+          <ApiConsole />
+        </div>
+      </Chapter>
+
+      <!-- Chapter 7: The Target -->
+      <Chapter alignment="center" title="6. The Next Blank Page" subtitle="My goal for 2026" date="Future">
+        <div class="max-w-xl mx-auto flex flex-col items-center relative mt-8">
+          <p class="text-text-secondary text-xl leading-relaxed mb-16 relative inline-block text-center">
+            I'm ready for the big leagues. My goal is to join 
+            <strong class="text-accent text-3xl font-mono tracking-wide relative inline-block mx-2 bg-accent/10 px-2 py-1 rounded border border-accent/20">
+              1xINTERNET
+            </strong> 
+            as an intern. I want to bring my proactive mindset, international readiness, and AI-augmented workflow to a world-class team.
+          </p>
+          
+          <a href="/CV_David_Munoz.pdf" download="CV_David_Munoz.pdf" class="relative inline-block group">
+            <div class="relative bg-surface border border-border hover:border-accent text-text-primary font-mono font-bold text-lg px-10 py-6 rounded-lg hover:shadow-glow transition-all duration-300 flex items-center gap-3 group-hover:-translate-y-1">
+              <span class="text-accent">$</span> ./download_cv.sh
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-muted group-hover:text-accent transition-colors">
+                <path d="M12 5v14M19 12l-7 7-7-7"/>
+              </svg>
+            </div>
+          </a>
+        </div>
+      </Chapter>
+
+    </StoryLine>
+  </main>
+  
+  <Footer />
+</Layout>
